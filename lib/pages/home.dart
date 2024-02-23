@@ -1,19 +1,18 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:image_picker/image_picker.dart';
 
-class MyHomePage extends StatefulWidget {
+class CreateChannel extends StatefulWidget {
   final String name;
 
-  const MyHomePage({Key? key, this.name = ''}) : super(key: key);
+  const CreateChannel({Key? key, this.name = ''}) : super(key: key);
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _CreateChannelState createState() => _CreateChannelState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _CreateChannelState extends State<CreateChannel> {
   String canJoin = 'Public';
   String canPost = 'Public';
   final ImagePicker _picker = ImagePicker();
@@ -52,8 +51,8 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           Padding(
               padding: defaultTargetPlatform == TargetPlatform.android
-                  ? EdgeInsets.only(bottom: 4)
-                  : EdgeInsets.only(bottom: 10)),
+                  ? const EdgeInsets.only(bottom: 4)
+                  : const EdgeInsets.only(bottom: 10)),
         ])
         
         );
@@ -101,8 +100,8 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         Padding(
             padding: defaultTargetPlatform == TargetPlatform.android
-                ? EdgeInsets.only(bottom: 4)
-                : EdgeInsets.only(bottom: 10)),
+                ? const EdgeInsets.only(bottom: 4)
+                : const EdgeInsets.only(bottom: 10)),
         const Text(
           'Image: ',
           style: TextStyle(
@@ -112,8 +111,8 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         Padding(
             padding: defaultTargetPlatform == TargetPlatform.android
-                ? EdgeInsets.only(bottom: 4)
-                : EdgeInsets.only(bottom: 10)),
+                ? const EdgeInsets.only(bottom: 4)
+                : const EdgeInsets.only(bottom: 10)),
         InkWell(
           onTap: () {
             getImage();
@@ -136,8 +135,8 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         Padding(
             padding: defaultTargetPlatform == TargetPlatform.android
-                ? EdgeInsets.only(bottom: 4)
-                : EdgeInsets.only(bottom: 10)),
+                ? const EdgeInsets.only(bottom: 4)
+                : const EdgeInsets.only(bottom: 10)),
         const Text(
           'Name: ',
           style: TextStyle(
@@ -147,8 +146,8 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         Padding(
             padding: defaultTargetPlatform == TargetPlatform.android
-                ? EdgeInsets.only(bottom: 4)
-                : EdgeInsets.only(bottom: 10)),
+                ? const EdgeInsets.only(bottom: 4)
+                : const EdgeInsets.only(bottom: 10)),
         TextField(
           maxLength: 75,
 
@@ -170,8 +169,9 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         Padding(
             padding: defaultTargetPlatform == TargetPlatform.android
-                ? EdgeInsets.only(bottom: 4)
-                : EdgeInsets.only(bottom: 10)),
+                ? const EdgeInsets.only(bottom: 4)
+                : const EdgeInsets.only(bottom: 10)
+              ),
         const Text(
           'Description: ',
           style: TextStyle(
@@ -181,8 +181,8 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         Padding(
             padding: defaultTargetPlatform == TargetPlatform.android
-                ? EdgeInsets.only(bottom: 4)
-                : EdgeInsets.only(bottom: 10)),
+                ? const EdgeInsets.only(bottom: 4)
+                : const EdgeInsets.only(bottom: 10)),
         TextField(
           maxLength: 300,
           maxLines: null,
@@ -207,8 +207,8 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
         Padding(padding: defaultTargetPlatform == TargetPlatform.android
-                ? EdgeInsets.only(bottom: 4)
-                : EdgeInsets.only(bottom: 10)),
+                ? const EdgeInsets.only(bottom: 4)
+                : const EdgeInsets.only(bottom: 10)),
         const Text(
           'Privacy',
           textAlign: TextAlign.left,
@@ -219,8 +219,8 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         Padding(
             padding: defaultTargetPlatform == TargetPlatform.android
-                ? EdgeInsets.only(bottom: 4)
-                : EdgeInsets.only(bottom: 10)),
+                ? const EdgeInsets.only(bottom: 4)
+                : const EdgeInsets.only(bottom: 10)),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -287,10 +287,11 @@ class _MyHomePageState extends State<MyHomePage> {
               title: Text(value),
               onTap: () {
                 setState(() {
-                  if (select == 'canPost')
+                  if (select == 'canPost') {
                     canPost = value;
-                  else
+                  } else {
                     canJoin = value;
+                  }
                 });
                 Navigator.pop(context);
               },
