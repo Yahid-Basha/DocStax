@@ -1,4 +1,4 @@
-package com.example.docstax
+package com.shiniemoon.docstax
 
 import io.flutter.embedding.android.FlutterActivity
 
