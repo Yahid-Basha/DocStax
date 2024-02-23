@@ -9,16 +9,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.1"
-<<<<<<< HEAD
-  args:
-    dependency: transitive
-    description:
-      name: args
-      sha256: eef6c46b622e0494a36c5a12d10d77fb4e855501a91c1b9ef9339326e58f0596
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.4.2"
-=======
   appwrite:
     dependency: "direct main"
     description:
@@ -27,7 +17,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "12.0.0-rc.4"
->>>>>>> 6b90a6095b2e0300524674a1927f2ef4d50d10f0
+  args:
+    dependency: transitive
+    description:
+      name: args
+      sha256: eef6c46b622e0494a36c5a12d10d77fb4e855501a91c1b9ef9339326e58f0596
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.2"
   async:
     dependency: transitive
     description:
@@ -491,7 +488,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.9.0"
-<<<<<<< HEAD
   path_parsing:
     dependency: transitive
     description:
@@ -502,10 +498,6 @@ packages:
     version: "1.0.1"
   path_provider:
     dependency: "direct main"
-=======
-  path_provider:
-    dependency: transitive
->>>>>>> 6b90a6095b2e0300524674a1927f2ef4d50d10f0
     description:
       name: path_provider
       sha256: b27217933eeeba8ff24845c34003b003b2b22151de3c908d0e679e8fe1aa078b
