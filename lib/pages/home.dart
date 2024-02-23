@@ -1,13 +1,12 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
 import 'package:image_picker/image_picker.dart';
 
 class CreateChannel extends StatefulWidget {
   final String name;
 
-  const CreateChannel({Key? key, this.name = ''}) : super(key: key);
+  const CreateChannel({super.key, this.name = ''});
   @override
   _CreateChannelState createState() => _CreateChannelState();
 }
