@@ -1,3 +1,8 @@
 {
+<<<<<<< HEAD
+  "java.configuration.updateBuildConfiguration": "automatic"
+}
+=======
     "java.configuration.updateBuildConfiguration": "automatic"
 }
+>>>>>>> 6b90a6095b2e0300524674a1927f2ef4d50d10f0
