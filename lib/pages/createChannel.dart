@@ -1,5 +1,5 @@
 //TODO: style this page
-// add a rout to submit button to go to the channel page
+//TODO: add a rout to submit button to go to the channel page
 
 import 'dart:io';
 import 'package:flutter/foundation.dart';
