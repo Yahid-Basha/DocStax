@@ -196,7 +196,7 @@ class _SearchPageState extends State<SearchPage> {
       ),
       leading: Container(
         decoration: BoxDecoration(
-          color: Color.fromARGB(182, 243, 231, 237),
+          color: const Color.fromARGB(182, 243, 231, 237),
           borderRadius: BorderRadius.circular(10.0),
         ),
         child: Padding(
@@ -205,7 +205,7 @@ class _SearchPageState extends State<SearchPage> {
             leadingIcon,
             height: 25.0,
             width: 25.0,
-            color: Color.fromARGB(131, 78, 27, 112),
+            color: const Color.fromARGB(131, 78, 27, 112),
           ),
         ),
       ),
@@ -226,18 +226,18 @@ class _SearchPageState extends State<SearchPage> {
       },
     );
   }
+}
 
-  Future<String> preparePdf(String assetPath) async {
-    final byteData = await rootBundle.load(assetPath);
+Future<String> preparePdf(String assetPath) async {
+  final byteData = await rootBundle.load(assetPath);
 
-    final dir = await getApplicationDocumentsDirectory();
-    final file = File('${dir.path}/my_file.pdf');
+  final dir = await getApplicationDocumentsDirectory();
+  final file = File('${dir.path}/my_file.pdf');
 
-    await file.writeAsBytes(byteData.buffer
-        .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
+  await file.writeAsBytes(byteData.buffer
+      .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes));
 
-    return file.path;
-  }
+  return file.path;
 }
 
 class DataSearch extends SearchDelegate<String> {
@@ -247,10 +247,16 @@ class DataSearch extends SearchDelegate<String> {
   DataSearch({required this.tilesData, required this.folderData});
 
   @override
+  TextStyle get searchFieldStyle => const TextStyle(
+        color: Color.fromARGB(146, 78, 27, 112),
+        fontSize: 18.0,
+      );
+  @override
   List<Widget> buildActions(BuildContext context) {
     return [
       IconButton(
-        icon: Icon(Icons.clear),
+        icon: const Icon(Icons.clear),
+        color: const Color.fromARGB(131, 78, 27, 112),
         onPressed: () {
           query = '';
         },
@@ -263,6 +269,7 @@ class DataSearch extends SearchDelegate<String> {
     return IconButton(
       icon: AnimatedIcon(
         icon: AnimatedIcons.menu_arrow,
+        color: const Color.fromARGB(131, 78, 27, 112),
         progress: transitionAnimation,
       ),
       onPressed: () {
@@ -283,15 +290,72 @@ class DataSearch extends SearchDelegate<String> {
           .toList());
 
     return results.isEmpty
-        ? Center(child: Text('No results found'))
+        ? const Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'No results found',
+              style: TextStyle(
+                fontSize: 19.0,
+                color:  Color.fromARGB(255, 49, 11, 75),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(width: 10.0),
+            Icon(
+              Icons.sentiment_dissatisfied,
+              color: Colors.black,
+              size: 24.0,
+            ),
+          ],
+        ),
+      )
         : ListView.builder(
             itemCount: results.length,
             itemBuilder: (context, index) {
+              bool isTile = tilesData.contains(results[index]);
               return ListTile(
                 title: Text(results[index]['title'] ?? results[index]['name']!),
-                subtitle: Text(results[index]['subtitle'] ?? ''),
-                onTap: () {
-                  // Handle tap
+                subtitle: Text(results[index]['subtitle'] ?? results[index]['latest']!),
+                leading: isTile
+                    ? Container(
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(182, 243, 231, 237),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: SvgPicture.asset(
+                            "assets/icons/document.svg",
+                            height: 25.0,
+                            width: 25.0,
+                            color: const Color.fromARGB(131, 78, 27, 112),
+                          ),
+                        ),
+                      )
+                    : const CircleAvatar(
+                        radius: 26.0,
+                        backgroundImage: AssetImage("assets/icons/profile_img.png"),
+                      ),
+                trailing: Image.asset("assets/icons/right-arrow.png"),
+                onTap: () async {
+
+                  //for files ontap logc is to open that file
+                  // final pdfPath = await preparePdf(
+                  //     'assets/pdf/Menstrual Health Chatbot.pdf');
+
+                  // Navigator.push(
+                  //   // Pass the appropriate context parameter to the function or method
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => PDFView(
+                  //       filePath: pdfPath,
+                  //     ),
+                  //   ),
+                  // );
+
+                  //todo: for channels open that channel page
                 },
               );
             },
@@ -310,41 +374,74 @@ class DataSearch extends SearchDelegate<String> {
           .toList());
 
     return suggestions.isEmpty
-        ? Center(child: Text('No results found'))
+        ? const  Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'No results found',
+              style: TextStyle(
+                fontSize: 19.0,
+                color:  Color.fromARGB(255, 49, 11, 75),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(width: 10.0),
+            Icon(
+              Icons.sentiment_dissatisfied,
+              color: Colors.black,
+              size: 24.0,
+            ),
+          ],
+        ),
+      )
         : ListView.builder(
             itemCount: suggestions.length,
             itemBuilder: (context, index) {
+              bool isTile = tilesData.contains(suggestions[index]);
               var suggestion =
                   suggestions[index]['title'] ?? suggestions[index]['name']!;
               var queryIndex =
                   suggestion.toLowerCase().indexOf(query.toLowerCase());
               return ListTile(
-                title: RichText(
-                  text: TextSpan(
-                    text: suggestion.substring(0, queryIndex),
-                    style: TextStyle(color: Colors.grey),
-                    children: [
-                      TextSpan(
-                        text: suggestion.substring(
-                            queryIndex, queryIndex + query.length),
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
+                  title: RichText(
+                    text: TextSpan(
+                      text: suggestion.substring(0, queryIndex),
+                      style: const TextStyle(color: Colors.grey),
+                      children: [
+                        TextSpan(
+                          text: suggestion.substring(
+                              queryIndex, queryIndex + query.length),
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      TextSpan(
-                        text: suggestion.substring(queryIndex + query.length),
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                    ],
+                        TextSpan(
+                          text: suggestion.substring(queryIndex + query.length),
+                          style: const TextStyle(color: Colors.grey),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                subtitle: Text(suggestions[index]['subtitle'] ?? ''),
-                onTap: () {
-                  query = suggestion;
-                  showResults(context);
-                },
-              );
+                  leading: isTile
+                      ? Padding(
+                          padding: const EdgeInsets.only(left: 10.0),
+                          child: SvgPicture.asset(
+                            "assets/icons/document.svg",
+                            height: 25.0,
+                            width: 25.0,
+                            color: Color.fromARGB(255, 61, 32, 79),
+                          ),
+                        )
+                      : const Padding(
+                          padding:  EdgeInsets.only(left: 10.0),
+                          child: Icon(
+                            Icons.tag,
+                            size: 25.0,
+                            color: Color.fromARGB(255, 61, 32, 79),
+                          ),
+                        ));
             },
           );
   }
