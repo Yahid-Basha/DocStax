@@ -11,10 +11,50 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  List<Map<String, String>> folderData = [
+    {
+      'name': 'Product roadmap',
+      'imagePath': 'assets/icons/profile_img.png',
+      'latest': 'The roadmap.pdf'
+    },
+    {
+      'name': 'Marketing',
+      'imagePath': 'assets/icons/profile_img.png',
+      'latest': 'mr.pdf'
+    },
+    {
+      'name': 'Engineering',
+      'imagePath': 'assets/icons/profile_img.png',
+      'latest': 'Operating Systems.pdf'
+    },
+    // ... other folders
+  ];
   @override
   Widget build(BuildContext context) {
-    // add floating button to create channels
     // design channel list for homepage
+
+    List<Widget> folderTiles = folderData
+        .map((folder) => Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5.0),
+              child: ListTile(
+                title: Text(
+                  folder['name']!,
+                ),
+                subtitle: Text(
+                  folder['latest']!,
+                  style: const TextStyle(color: Colors.grey),
+                ),
+                leading: CircleAvatar(
+                  radius: 26.0,
+                  backgroundImage: AssetImage(folder['imagePath']!),
+                ),
+                onTap: () {
+                  // Navigate to folder screen
+                },
+              ),
+            ))
+        .toList();
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight + 10),
@@ -47,12 +87,16 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      body: const Center(
-        child: Text(
-          'Hello, World!',
-          style: TextStyle(fontSize: 24),
-        ),
+      body: ListView(
+        children: [
+          //Your Channels tiles
+          ...folderTiles,
+          ...folderTiles,
+          ...folderTiles,
+          ...folderTiles,
+        ],
       ),
+ 
       floatingActionButton:  FloatingActionButton(
             child: const Icon(Icons.add),
             onPressed: () {
