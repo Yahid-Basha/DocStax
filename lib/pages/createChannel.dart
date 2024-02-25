@@ -1,6 +1,8 @@
 //TODO: style this page
 //TODO: add a rout to submit button to go to the channel page
 
+import 'package:flutter_svg/flutter_svg.dart';
+
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -34,44 +36,51 @@ class _CreateChannelState extends State<CreateChannel> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pop(context);
-            },
+      appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: const Color.fromARGB(182, 238, 231, 243),
+        title: const Text(
+          'Create new channel',
+          style: TextStyle(
+            fontSize: 24.0,
+            fontWeight: FontWeight.bold,
+            color: Color.fromARGB(255, 49, 11, 75),
           ),
-          title: const Text('Create'),
         ),
-        body: Stack(
-          children: [
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+      body: ListView(
+        children: [
           Container(
-            margin: const EdgeInsets.only(left: 16, right: 16),
+            margin: const EdgeInsets.only(left: 16, right: 16, top: 10),
             child: elements(),
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: createButton(context),
-          ),
           Padding(
-              padding: defaultTargetPlatform == TargetPlatform.android
-                  ? const EdgeInsets.only(bottom: 4)
-                  : const EdgeInsets.only(bottom: 10)),
-        ])
-        
-        );
+            padding: defaultTargetPlatform == TargetPlatform.android
+                ? const EdgeInsets.only(bottom: 4)
+                : const EdgeInsets.only(bottom: 10),
+          ),
+        ],
+      ),
+      bottomNavigationBar: createButton(context),
+    );
   }
 
   Padding createButton(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(24.0),
       child: ElevatedButton(
         onPressed: () {
           openModalSuccess(context);
         },
         style: ButtonStyle(
           backgroundColor:
-              MaterialStateProperty.all(Color.fromARGB(255, 17, 10, 208)),
+              MaterialStateProperty.all(Color.fromARGB(255, 98, 41, 138)),
           padding: MaterialStateProperty.all(
             const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
           ),
@@ -94,103 +103,120 @@ class _CreateChannelState extends State<CreateChannel> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Channel Information',
-          textAlign: TextAlign.left,
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        Padding(
+            padding: defaultTargetPlatform == TargetPlatform.android
+                ? const EdgeInsets.only(bottom: 4, top: 10)
+                : const EdgeInsets.only(bottom: 10, top: 15)),
+        // const Text(
+        //   'Image: ',
+        //   style: TextStyle(
+        //     fontWeight: FontWeight.bold,
+        //     fontSize: 18,
+        //   ),
+        // ),
         Padding(
             padding: defaultTargetPlatform == TargetPlatform.android
                 ? const EdgeInsets.only(bottom: 4)
                 : const EdgeInsets.only(bottom: 10)),
-        const Text(
-          'Image: ',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-          ),
-        ),
-        Padding(
-            padding: defaultTargetPlatform == TargetPlatform.android
-                ? const EdgeInsets.only(bottom: 4)
-                : const EdgeInsets.only(bottom: 10)),
-        InkWell(
-          onTap: () {
-            getImage();
-            // Add your code here
-          },
-          child: _image == null
-              ? const Icon(
-                  Icons.add_photo_alternate_rounded,
-                  size: 68,
-                  color: Color.fromARGB(221, 13, 39, 232),
-                )
-              : ClipOval(
-                  child: Image.file(
-                    File(_image!.path),
-                    width: 100,
-                    height: 100,
-                    fit: BoxFit.cover,
+        Center(
+          child: InkWell(
+            onTap: () {
+              getImage();
+              // Add your code here
+            },
+            child: _image == null
+                ? Stack(
+                    children: [
+                      SvgPicture.asset(
+                        'assets/icons/account.svg',
+                        height: 140.0,
+                        width: 140.0,
+                        color: Color.fromARGB(255, 217, 206, 225),
+                      ),
+                      const Icon(
+                        Icons.add_photo_alternate_rounded,
+                        size: 32,
+                        color: Color.fromARGB(255, 98, 41, 138),
+                      ),
+                    ],
+                  )
+                : ClipOval(
+                    child: Image.file(
+                      File(_image!.path),
+                      width: 150,
+                      height: 150,
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                ),
-        ),
-        Padding(
-            padding: defaultTargetPlatform == TargetPlatform.android
-                ? const EdgeInsets.only(bottom: 4)
-                : const EdgeInsets.only(bottom: 10)),
-        const Text(
-          'Name: ',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
           ),
         ),
+
         Padding(
             padding: defaultTargetPlatform == TargetPlatform.android
-                ? const EdgeInsets.only(bottom: 4)
-                : const EdgeInsets.only(bottom: 10)),
+                ? const EdgeInsets.only(bottom: 15)
+                : const EdgeInsets.only(bottom: 20)),
+
+        // Name: Label
+        Padding(
+          padding: defaultTargetPlatform == TargetPlatform.android
+              ? const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 4)
+              : const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 4),
+          child: const Text(
+            'Channel Name: ',
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 20,
+            ),
+          ),
+        ),
+
+        //Name: TextField
         TextField(
           maxLength: 75,
-
           onChanged: (value) {
             setName(value);
           },
           //style
           style: const TextStyle(
             fontSize: 20,
+            color: Color.fromARGB(229, 78, 27, 112),
           ),
-          decoration: const InputDecoration(
+          decoration: InputDecoration(
+            contentPadding: const EdgeInsets.all(15.0),
+            hintText: 'DocStax',
+            hintStyle: const TextStyle(
+                fontSize: 17.0,
+                color: Color.fromARGB(146, 78, 27, 112),
+                fontWeight: FontWeight.w400),
+            floatingLabelBehavior: FloatingLabelBehavior.never,
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(15)),
+              borderRadius: BorderRadius.circular(18.0),
+              borderSide: BorderSide.none,
             ),
-            hintText: 'Channel Name',
-            fillColor: Color(0xE8EDF4FF),
             filled: true,
+            fillColor: const Color.fromARGB(182, 238, 231, 243),
           ),
         ),
+
+        //Description: label
         Padding(
-            padding: defaultTargetPlatform == TargetPlatform.android
-                ? const EdgeInsets.only(bottom: 4)
-                : const EdgeInsets.only(bottom: 10)
-              ),
-        const Text(
-          'Description: ',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
+          padding: defaultTargetPlatform == TargetPlatform.android
+              ? const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 4)
+              : const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 4),
+          child: const Text(
+            'Description: ',
+            style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 20,
+            ),
           ),
         ),
-        Padding(
-            padding: defaultTargetPlatform == TargetPlatform.android
-                ? const EdgeInsets.only(bottom: 4)
-                : const EdgeInsets.only(bottom: 10)),
+
+        //Description: Input Field
         TextField(
           maxLength: 300,
           maxLines: null,
-          minLines: defaultTargetPlatform==TargetPlatform.android ? 3 : 5,
+          minLines: defaultTargetPlatform == TargetPlatform.android ? 3 : 5,
           onChanged: (value) {
             setName(value);
           },
@@ -198,79 +224,121 @@ class _CreateChannelState extends State<CreateChannel> {
             fontSize: 20,
             overflow: TextOverflow.visible,
           ),
-          decoration: const InputDecoration(
-            contentPadding:
-                EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.all(Radius.circular(15)),
-              borderSide: BorderSide(color: Colors.red),
+          decoration: InputDecoration(
+            contentPadding: const EdgeInsets.all(15.0),
+            hintText: 'This is the DocStax Channel',
+            hintStyle: const TextStyle(
+              fontSize: 17.0,
+              color: Color.fromARGB(146, 78, 27, 112),
+              fontWeight: FontWeight.w400,
             ),
-            hintText: 'Description of the channel',
-            fillColor: Color(0xE8EDF4FF),
+            floatingLabelBehavior: FloatingLabelBehavior.never,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(18.0),
+              borderSide: BorderSide.none,
+            ),
             filled: true,
+            fillColor: const Color.fromARGB(182, 238, 231, 243),
           ),
         ),
-        Padding(padding: defaultTargetPlatform == TargetPlatform.android
-                ? const EdgeInsets.only(bottom: 4)
-                : const EdgeInsets.only(bottom: 10)),
-        const Text(
-          'Privacy',
-          textAlign: TextAlign.left,
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+
         Padding(
             padding: defaultTargetPlatform == TargetPlatform.android
-                ? const EdgeInsets.only(bottom: 4)
-                : const EdgeInsets.only(bottom: 10)),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              'Who can Join? ',
-              style: TextStyle(
-                fontSize: 20,
-              ),
-            ),
-            const Padding(padding: EdgeInsets.only(left: 10)),
-            TextButton(
-              onPressed: () {
-                // Handle button press
-                modalOpen(context, 'canJoin');
-              },
-              child: Text(
-                '$canJoin 🔽',
-                style: const TextStyle(fontSize: 20, color: Colors.black87),
-              ),
-            )
-          ],
-        ),
-        const Padding(padding: EdgeInsets.only(bottom: 7)),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              'Who can post?',
-              style: TextStyle(
-                fontSize: 20,
-              ),
-            ),
+                ? const EdgeInsets.only(bottom: 8)
+                : const EdgeInsets.only(bottom: 15)),
 
-            const Padding(padding: EdgeInsets.only(left: 10)),
-            // Remove the @override annotation
-            TextButton(
-              onPressed: () {
-                // Handle button press
-                modalOpen(context, 'canPost');
-              },
-              child: Text(
-                '$canPost 🔽',
-                style: const TextStyle(fontSize: 20, color: Colors.black87),
+        //Who can join line
+        Padding(
+          padding:
+              const EdgeInsets.only(top: 10, left: 10, right: 0, bottom: 0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Who can Join? ',
+                style: TextStyle(
+                  fontSize: 19,
+                ),
               ),
-            )
-          ],
+              TextButton(
+                onPressed: () {
+                  // Handle button press
+                  modalOpen(context, 'canJoin');
+                },
+                child: Container(
+                  padding: const EdgeInsets.only(left: 10, top: 7, right: 10, bottom: 7), // Add padding
+                   // Add padding
+                  
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(182, 238, 231, 243),
+                    borderRadius: BorderRadius.circular(30), // Set border radius
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        '$canJoin',
+                        style: const TextStyle(fontSize: 16, color: Colors.black87),
+                      ),
+                      const SizedBox(width: 7),
+                      const Icon(
+                        Icons.arrow_drop_down_circle_outlined,
+                        color: Color.fromARGB(255, 98, 41, 138),
+                        size: 25,
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+
+        //Who can post? line
+        Padding(
+          padding:
+              const EdgeInsets.only(top: 10, left: 10, right: 0, bottom: 0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Who can Post? ',
+                style: TextStyle(
+                  fontSize: 19,
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  // Handle button press
+                  modalOpen(context, 'canPost');
+                },
+                child: Container(
+                  padding: const EdgeInsets.only(left: 10, top: 7, right: 10, bottom: 7), // Add padding
+                   // Add padding
+                  
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(182, 238, 231, 243),
+                    borderRadius: BorderRadius.circular(30), // Set border radius
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        '$canPost',
+                        style: const TextStyle(fontSize: 16, color: Colors.black87),
+                      ),
+                      const SizedBox(width: 7),
+                      const Icon(
+                        Icons.arrow_drop_down_circle_outlined,
+                        color: Color.fromARGB(255, 98, 41, 138),
+                        size: 25,
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
       ],
     );
