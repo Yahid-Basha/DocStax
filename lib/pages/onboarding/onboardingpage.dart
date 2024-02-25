@@ -1,7 +1,8 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_onboarding_slider/flutter_onboarding_slider.dart';
+import '../account/signup.dart';
+import '../account/login.dart';
 
 class OnboardingPage extends StatelessWidget {
   final Color kDarkBlueColor = const Color(0xFF053149);
@@ -11,12 +12,12 @@ class OnboardingPage extends StatelessWidget {
     return OnBoardingSlider(
       finishButtonText: 'Register',
       onFinish: () {
-        // Navigator.push(
-        //   context,
-        //   CupertinoPageRoute(
-        //     builder: (context) => const RegisterPage(),
-        //   ),
-        // );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SignupPage(),
+          ),
+        );
       },
       finishButtonStyle: FinishButtonStyle(
         backgroundColor: kDarkBlueColor,
@@ -38,12 +39,12 @@ class OnboardingPage extends StatelessWidget {
         ),
       ),
       trailingFunction: () {
-        // Navigator.push(
-        //   context,
-        //   CupertinoPageRoute(
-        //     // builder: (context) => const LoginPage(),
-        //   ),
-        // );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LoginPage(),
+          ),
+        );
       },
       controllerColor: kDarkBlueColor,
       totalPage: 3,
