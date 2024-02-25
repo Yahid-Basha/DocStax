@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'pages/account/signup.dart';
-// import 'pages/homePage.dart';
+import 'pages/homePage.dart';
+// import 'pages/createChannel.dart';
+
 void main() {
   runApp(const MyApp());
 }
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -13,8 +16,11 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Docstax',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: const Color(0xffEE5366),
+        colorScheme:
+            ColorScheme.fromSwatch(accentColor: const Color(0xffEE5366)),
       ),
+      // home: const CreateChannel(),
       // home: const HomePage(),
       home:  SignupPage(),
     );
