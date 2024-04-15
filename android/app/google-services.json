@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "791106535",
+    "project_id": "docstax-fdbms",
+    "storage_bucket": "docstax-fdbms.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:791106535:android:1519f7d9e0f7c4ee88e342",
+        "android_client_info": {
+          "package_name": "com.shiniemoon.docstax"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNdb1JahIix4XBCYlRFXXePAR20_VsLFo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
