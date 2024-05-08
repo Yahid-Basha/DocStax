@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import '../../pages/homePage.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/gestures.dart';
 import 'login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import '../../firebase_options.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class SignupPage extends StatefulWidget {
   @override
@@ -15,20 +17,30 @@ class SignupPage extends StatefulWidget {
 class _SignupPageState extends State<SignupPage> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+  TextEditingController _nameController = TextEditingController();
   bool _isLoading = false;
 
   void _signup() async {
     setState(() {
       _isLoading = true;
     });
-
+    String name = _nameController.text;
     String email = _emailController.text;
     String password = _passwordController.text;
-
+    print(email);
+    FirebaseDatabase database = FirebaseDatabase.instance;
+    DatabaseReference ref = FirebaseDatabase.instance.ref();
+    print(ref);
+    ref.child('users').push().set({
+      'name': name,
+      'email': email,
+    });
     try {
       await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
-      print('Signing up');
+
+
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const HomePage()),
@@ -64,6 +76,13 @@ class _SignupPageState extends State<SignupPage> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
+                      TextField(
+                        controller: _nameController,
+                        decoration: const InputDecoration(
+                          labelText: 'Name',
+                        ),
+                      ),
+                      const SizedBox(height: 16.0),
                       TextField(
                         controller: _emailController,
                         decoration: const InputDecoration(
