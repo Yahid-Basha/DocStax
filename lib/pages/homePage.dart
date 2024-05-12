@@ -1,12 +1,15 @@
 import 'package:docstax/pages/account/auth_page.dart';
 import 'package:docstax/pages/account/login.dart';
 import 'package:docstax/pages/chatPage.dart';
+import 'package:docstax/pages/chatPage2.dart';
 import 'package:docstax/pages/search.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'createChannel.dart';
+
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -55,8 +58,20 @@ class _HomePageState extends State<HomePage> {
                   backgroundColor: Colors.transparent,
                 ),
                 onTap: () {
+
+                  final user = types.User(
+  id: FirebaseAuth.instance.currentUser?.uid ?? '',
+  // Add other user properties if needed
+);
+                  final room = types.Room(
+  id: 'room1',  // Replace with your own unique room ID
+  name: 'Chat Room 1',  // Replace with your own room name
+  users: [user],  // Add other users if needed
+  type: types.RoomType.direct, 
+);
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ChatScreen()));
+                      MaterialPageRoute(builder: (context) => ChatPage(room: room,)));
+
                 },
               ),
             ))
