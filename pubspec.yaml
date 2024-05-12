@@ -49,6 +49,16 @@ dependencies:
   cloud_firestore: ^4.17.0
   firebase_database: ^10.5.2
 
+  faker: ^2.1.0
+
+
+  file_picker: ^8.0.3
+  firebase_storage: ^11.7.5
+  flutter_chat_types: ^3.6.2
+  flutter_chat_ui: ^1.6.12
+  flutter_firebase_chat_core: ^1.6.7
+  open_filex: ^4.4.0
+
 dependency_overrides:
   http: ^1.0.0
 

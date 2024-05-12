@@ -19,7 +19,7 @@ class AuthPage extends StatelessWidget{
             } 
             // User is not signed in
             else {
-              return LoginPage();
+              return HomePage();
             }
           },
         ),

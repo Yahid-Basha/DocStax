@@ -44,7 +44,7 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAjGKurHtic9NY5rE6Kb2Kd-9SZM-w5lwc',
+    apiKey: 'AIzaSyCNdb1JahIix4XBCYlRFXXePAR20_VsLFo',
     appId: '1:791106535:web:66cc579b0180b71f88e342',
     messagingSenderId: '791106535',
     projectId: 'docstax-fdbms',
@@ -61,7 +61,7 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDnqmsLDuQfrJ0SuB5dFpBeFSxhiB3hgLs',
+    apiKey: 'AIzaSyCNdb1JahIix4XBCYlRFXXePAR20_VsLFo',
     appId: '1:791106535:ios:3dd80406e4bb2ff888e342',
     messagingSenderId: '791106535',
     projectId: 'docstax-fdbms',
@@ -70,7 +70,7 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyDnqmsLDuQfrJ0SuB5dFpBeFSxhiB3hgLs',
+    apiKey: 'AIzaSyCNdb1JahIix4XBCYlRFXXePAR20_VsLFo',
     appId: '1:791106535:ios:12eca9cd63da7b0a88e342',
     messagingSenderId: '791106535',
     projectId: 'docstax-fdbms',
