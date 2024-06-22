@@ -15,7 +15,7 @@ class UsersPage extends StatelessWidget {
     final color = getUserAvatarNameColor(user);
     final hasImage = user.imageUrl != null;
     final name = getUserName(user);
-    retuern Container(
+    return Container(
       margin: const EdgeInsets.only(right: 16),
       child: CircleAvatar(
         backgroundColor: hasImage ? Colors.transparent : color,
