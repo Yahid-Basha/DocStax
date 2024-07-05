@@ -2,6 +2,7 @@ import 'package:docstax/pages/account/auth_page.dart';
 import 'package:docstax/pages/account/login.dart';
 import 'package:docstax/pages/channels.dart';
 import 'package:docstax/pages/chatPage.dart';
+import 'package:docstax/pages/shared_with_me_dart.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:docstax/pages/chatPage2.dart';
 import 'package:docstax/pages/search.dart';
@@ -16,7 +17,6 @@ import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
   @override
-
   State<HomePage> createState() => _HomePageState();
 }
 
@@ -60,27 +60,27 @@ class _HomePageState extends State<HomePage> {
                   backgroundColor: Colors.transparent,
                 ),
                 onTap: () {
-
                   final user = types.User(
-  id: FirebaseAuth.instance.currentUser?.uid ?? '',
-  // Add other user properties if needed
-);
+                    id: FirebaseAuth.instance.currentUser?.uid ?? '',
+                    // Add other user properties if needed
+                  );
                   final room = types.Room(
-  id: 'room1',  // Replace with your own unique room ID
-  name: 'Chat Room 1',  // Replace with your own room name
-  users: [user],  // Add other users if needed
-  type: types.RoomType.direct, 
-);
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ChatPage(room: room,)));
-
+                    id: 'room1', // Replace with your own unique room ID
+                    name: 'Chat Room 1', // Replace with your own room name
+                    users: [user], // Add other users if needed
+                    type: types.RoomType.direct,
+                  );
+                  Navigator.push(
+                    context,
+                    // MaterialPageRoute(builder: (context) => ChatPage(room: room,)));
+                    MaterialPageRoute(builder: (context) => SharedWithMePage()),
+                  );
                 },
               ),
             ))
         .toList();
     return Scaffold(
       appBar: AppBar(
-        
         backgroundColor:
             const Color.fromARGB(182, 238, 231, 243), // Change AppBar color
         title: const Text(
@@ -127,14 +127,13 @@ class _HomePageState extends State<HomePage> {
             onPressed: () {
               FirebaseAuth.instance.signOut();
               // GoogleSignIn().signOut();
-               Navigator.of(context).pushAndRemoveUntil(
+              Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) => LoginPage()),
                 (Route<dynamic> route) => false,
               );
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => AuthPage()));
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => AuthPage()));
             },
-
           ),
         ],
       ),

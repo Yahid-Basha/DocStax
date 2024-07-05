@@ -144,9 +144,50 @@ class DriveHelper {
   }
 
 
+  Future<List<drive.File>> listFilesC(String folderId) async {
+    final fileList = await driveApi.files.list(
+      q: "'$folderId' in parents and trashed = false",
+      $fields: "files(id, name, createdTime, modifiedTime)",
+    );
+    return fileList.files ?? [];
+  }
+
+  Future<void> downloadFileC(String fileId, String savePath) async {
+    final response = await driveApi.files.get(
+      fileId,
+      downloadOptions: drive.DownloadOptions.fullMedia,
+    ) as drive.Media;
+    final dataStore = File(savePath).openSync(mode: FileMode.write);
+    response.stream.listen((data) {
+      dataStore.writeFromSync(data);
+    }, onDone: () {
+      dataStore.close();
+    }, onError: (e) {
+      print('Error downloading file: $e');
+    });
+  }
+
+  Future<drive.File?> getMostRecentFileC(String folderId) async {
+    final fileList = await driveApi.files.list(
+      q: "'$folderId' in parents and trashed = false",
+      orderBy: "createdTime desc",
+      pageSize: 1,
+      $fields: "files(id, name, createdTime, modifiedTime)",
+    );
+    return fileList.files?.first;
+  }
+
   Future<List<drive.File>> listFiles(String folderId) async {
     final fileList = await driveApi.files.list(
       q: "'$folderId' in parents and trashed = false",
+      $fields: "files(id, name, createdTime, modifiedTime)",
+    );
+    return fileList.files ?? [];
+  }
+
+  Future<List<drive.File>> listSharedFiles() async {
+    final fileList = await driveApi.files.list(
+      q: "sharedWithMe",
       $fields: "files(id, name, createdTime, modifiedTime)",
     );
     return fileList.files ?? [];
