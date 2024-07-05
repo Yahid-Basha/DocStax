@@ -109,9 +109,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../pages/homePage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
 
 // import 'register.dart';
-import '../../pages/register.dart';
+import '../../pages/account/signup.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -180,7 +183,27 @@ class _LoginPageState extends State<LoginPage> {
     _usernameController?.dispose();
     super.dispose();
   }
+  Future<void> _loginWithGoogle() async {
+    // Implement your login with Google logic here
 
+    GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+    AuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    UserCredential userCredential =
+        await FirebaseAuth.instance.signInWithCredential(credential);
+    print(userCredential.user?.displayName);
+
+    if (UserCredential != null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomePage()),
+      );
+    }
+  }
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
@@ -253,12 +276,14 @@ class _LoginPageState extends State<LoginPage> {
                       : () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => const RegisterPage(),
+                              builder: (context) => SignupPage(),
                             ),
                           );
                         },
                   child: const Text('Register'),
                 ),
+
+                TextButton(onPressed: _loginWithGoogle , child: const Text('Login with Google'))
               ],
             ),
           ),

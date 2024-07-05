@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
       title: 'Docstax',
       theme: ThemeData(
       ),
-      home:  RoomsPage(),
+      home:  AuthPage(),
     );
   }
 }

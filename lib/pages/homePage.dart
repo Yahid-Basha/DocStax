@@ -1,6 +1,8 @@
 import 'package:docstax/pages/account/auth_page.dart';
 import 'package:docstax/pages/account/login.dart';
+import 'package:docstax/pages/channels.dart';
 import 'package:docstax/pages/chatPage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:docstax/pages/chatPage2.dart';
 import 'package:docstax/pages/search.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -111,7 +113,20 @@ class _HomePageState extends State<HomePage> {
               // Change icon color to contrast with AppBar color
             ),
             onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ChannelsPage()));
+            },
+          ),
+          IconButton(
+            icon: SvgPicture.asset(
+              'assets/icons/account.svg',
+              width: 20,
+              height: 20,
+              // Change icon color to contrast with AppBar color
+            ),
+            onPressed: () {
               FirebaseAuth.instance.signOut();
+              // GoogleSignIn().signOut();
                Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (context) => LoginPage()),
                 (Route<dynamic> route) => false,
@@ -119,6 +134,7 @@ class _HomePageState extends State<HomePage> {
               Navigator.push(context,
                   MaterialPageRoute(builder: (context) => AuthPage()));
             },
+
           ),
         ],
       ),

@@ -2,8 +2,9 @@
 //TODO: add a rout to submit button to go to the channel page
 
 import 'package:flutter_svg/flutter_svg.dart';
-
+import 'package:googleapis/drive/v3.dart' as drive;
 import 'dart:io';
+import './drive/drive_helper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -21,6 +22,7 @@ class _CreateChannelState extends State<CreateChannel> {
   String canPost = 'Public';
   final ImagePicker _picker = ImagePicker();
   XFile? _image;
+  String _name = '';
 
   Future getImage() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
@@ -28,9 +30,13 @@ class _CreateChannelState extends State<CreateChannel> {
       _image = image;
     });
   }
+ 
 
   void setName(String input) {
     print(input);
+    setState(() {
+      _name = input;
+    });
   }
 
   @override
@@ -75,7 +81,9 @@ class _CreateChannelState extends State<CreateChannel> {
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: ElevatedButton(
-        onPressed: () {
+        onPressed: () async {
+          //TODO: add gdrive folder creation
+          // await createFolder(_name);
           openModalSuccess(context);
         },
         style: ButtonStyle(
@@ -266,19 +274,22 @@ class _CreateChannelState extends State<CreateChannel> {
                   modalOpen(context, 'canJoin');
                 },
                 child: Container(
-                  padding: const EdgeInsets.only(left: 10, top: 7, right: 10, bottom: 7), // Add padding
-                   // Add padding
-                  
+                  padding: const EdgeInsets.only(
+                      left: 10, top: 7, right: 10, bottom: 7), // Add padding
+                  // Add padding
+
                   decoration: BoxDecoration(
                     color: const Color.fromARGB(182, 238, 231, 243),
-                    borderRadius: BorderRadius.circular(30), // Set border radius
+                    borderRadius:
+                        BorderRadius.circular(30), // Set border radius
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
                         '$canJoin',
-                        style: const TextStyle(fontSize: 16, color: Colors.black87),
+                        style: const TextStyle(
+                            fontSize: 16, color: Colors.black87),
                       ),
                       const SizedBox(width: 7),
                       const Icon(
@@ -313,19 +324,22 @@ class _CreateChannelState extends State<CreateChannel> {
                   modalOpen(context, 'canPost');
                 },
                 child: Container(
-                  padding: const EdgeInsets.only(left: 10, top: 7, right: 10, bottom: 7), // Add padding
-                   // Add padding
-                  
+                  padding: const EdgeInsets.only(
+                      left: 10, top: 7, right: 10, bottom: 7), // Add padding
+                  // Add padding
+
                   decoration: BoxDecoration(
                     color: const Color.fromARGB(182, 238, 231, 243),
-                    borderRadius: BorderRadius.circular(30), // Set border radius
+                    borderRadius:
+                        BorderRadius.circular(30), // Set border radius
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
                         '$canPost',
-                        style: const TextStyle(fontSize: 16, color: Colors.black87),
+                        style: const TextStyle(
+                            fontSize: 16, color: Colors.black87),
                       ),
                       const SizedBox(width: 7),
                       const Icon(

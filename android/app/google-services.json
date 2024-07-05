@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "791106535",
+    "firebase_url": "https://docstax-fdbms-default-rtdb.firebaseio.com",
     "project_id": "docstax-fdbms",
     "storage_bucket": "docstax-fdbms.appspot.com"
   },
@@ -12,7 +13,20 @@
           "package_name": "com.shiniemoon.docstax"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "791106535-7f7oka7oo0flap2b91caj0u2shc5iojf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.shiniemoon.docstax",
+            "certificate_hash": "c37371ffbbb156ba2e94ce821018165dc830360f"
+          }
+        },
+        {
+          "client_id": "791106535-kc0gqpv38kqqik6j6vemfqbm21fcbm7l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCNdb1JahIix4XBCYlRFXXePAR20_VsLFo"
@@ -20,7 +34,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "791106535-kc0gqpv38kqqik6j6vemfqbm21fcbm7l.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "791106535-8a9fh3bi730eajk0q1sstkdiqdp2ibtd.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.shiniemoon.docstax.RunnerTests"
+              }
+            }
+          ]
         }
       }
     }
