@@ -60,6 +60,7 @@ dependencies:
   flutter_firebase_chat_core: ^1.6.7
   open_filex: ^4.4.0
   google_sign_in: ^6.2.1
+  share_plus: ^4.0.8
 
 dependency_overrides:
   http: ^1.0.0

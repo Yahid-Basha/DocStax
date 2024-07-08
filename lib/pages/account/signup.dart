@@ -3,7 +3,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import '../../pages/homePage.dart';
+import '../../pages/home.dart';
 import 'package:flutter/gestures.dart';
 import 'login.dart';
 import 'package:firebase_core/firebase_core.dart';

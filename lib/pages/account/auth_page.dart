@@ -1,6 +1,6 @@
 import 'package:docstax/pages/account/login.dart';
 import 'package:docstax/pages/account/signup.dart';
-import 'package:docstax/pages/homePage.dart';
+import 'package:docstax/pages/home.dart';
 import 'package:docstax/pages/onboarding/onboardingpage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';

@@ -2,13 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/drive/v3.dart' as drive;
-import 'package:image_picker/image_picker.dart';
 import 'drive/drive_helper.dart';
 import './firebase/firebase_storage_helper.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:open_filex/open_filex.dart';
-import 'package:path_provider/path_provider.dart';
-import 'dart:io';
 import 'channel.dart';
 
 class SharedWithMePage extends StatefulWidget {
@@ -21,12 +16,10 @@ class SharedWithMePage extends StatefulWidget {
 class _SharedWithMePageState extends State<SharedWithMePage> {
   DriveHelper? driveHelper;
   FirebaseStorageHelper? firebaseStorageHelper;
-  TextEditingController _folderNameController = TextEditingController();
-  final ImagePicker _picker = ImagePicker();
-  List<drive.File> sharedFiles = [];
+  List<drive.File> sharedFolders = [];
   Map<String, String?> recentFiles = {};
+  Map<String, String?> recentFileTimes = {};
   Map<String, String?> profilePictures = {};
-  File? selectedImageFile;
   bool _isLoading = true;
 
   @override
@@ -53,8 +46,8 @@ class _SharedWithMePageState extends State<SharedWithMePage> {
         firebaseStorageHelper = FirebaseStorageHelper();
         print("DriveHelper initialized successfully.");
 
-        // Fetch shared files
-        await _fetchSharedFiles();
+        // Load shared folders
+        await _loadSharedFolders();
       } else {
         print("Google authentication failed.");
       }
@@ -67,44 +60,74 @@ class _SharedWithMePageState extends State<SharedWithMePage> {
     }
   }
 
-  Future<void> _fetchSharedFiles() async {
-    if (driveHelper != null) {
-      sharedFiles = await driveHelper!.listSharedFiles();
+  String formatDateTime(String isoDateTime) {
+    final dateTime = DateTime.parse(isoDateTime);
+    final now = DateTime.now();
 
+    if (dateTime.year == now.year &&
+        dateTime.month == now.month &&
+        dateTime.day == now.day) {
+      return "${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}";
+    } else {
+      return "${dateTime.day.toString().padLeft(2, '0')}/${dateTime.month.toString().padLeft(2, '0')}/${dateTime.year.toString().substring(2)}";
+    }
+  }
+
+  Future<void> _loadSharedFolders() async {
+    if (driveHelper != null) {
+      // List shared folders
+      sharedFolders = await driveHelper!.listSharedWithMeFolders();
       // Get the most recent file and profile picture for each folder
-      for (var file in sharedFiles) {
-        var recentFile = await driveHelper!.getMostRecentFile(file.id!);
-        recentFiles[file.id!] = recentFile?.name;
+      for (var folder in sharedFolders) {
+        var recentFileData = await driveHelper!.getMostRecentFile(folder.id!);
+        if (recentFileData != null) {
+          recentFiles[folder.id!] = recentFileData['name'];
+          recentFileTimes[folder.id!] = formatDateTime(recentFileData['time']!);
+        }
 
         var profilePictureUrl =
-            await firebaseStorageHelper!.getImageUrl(file.id!);
-        profilePictures[file.id!] = profilePictureUrl;
+            await firebaseStorageHelper!.getImageUrl(folder.id!);
+
+        profilePictures[folder.id!] = profilePictureUrl;
       }
 
       setState(() {});
     }
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Shared With Me'),
-      ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
           : RefreshIndicator(
-              onRefresh: _fetchSharedFiles,
+              onRefresh: _loadSharedFolders,
               child: ListView.builder(
-                itemCount: sharedFiles.length,
+                itemCount: sharedFolders.length,
                 itemBuilder: (context, index) {
-                  final file = sharedFiles[index];
-                  final recentFileName = recentFiles[file.id] ?? 'No files';
-                  final profilePictureUrl = profilePictures[file.id];
+                  final folder = sharedFolders[index];
+                  final recentFileName = recentFiles[folder.id] ?? 'No files';
+                  final recentFileTime = recentFileTimes[folder.id] ?? '';
+                  final profilePictureUrl = profilePictures[folder.id];
 
                   return ListTile(
-                    title: Text(file.name ?? 'Unnamed File'),
-                    subtitle: Text(recentFileName),
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            folder.name ?? 'Unnamed Folder',
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Text(
+                          recentFileTimes[folder.id!] ?? '',
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                    subtitle: Text(recentFiles[folder.id!] ?? 'No files'),
                     leading: profilePictureUrl != null
                         ? CachedNetworkImage(
                             imageUrl: profilePictureUrl,
@@ -129,16 +152,24 @@ class _SharedWithMePageState extends State<SharedWithMePage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => ChannelPage(
-                            folderId: file.id!,
+                            folderId: folder.id!,
                             driveHelper: driveHelper,
-                          ), // Pass the folderId here
+                          ),
                         ),
                       );
                     },
                   );
+
                 },
               ),
             ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: const Color.fromARGB(199, 98, 45, 134),
+        onPressed: () {
+          // Implement any required action for FloatingActionButton
+        },
+        child: Icon(Icons.add, color: Colors.white),
+      ),
     );
   }
 }

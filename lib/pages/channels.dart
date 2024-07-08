@@ -10,7 +10,6 @@ import 'package:open_filex/open_filex.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'channel.dart';
-
 class ChannelsPage extends StatefulWidget {
   const ChannelsPage({super.key});
 
@@ -25,6 +24,7 @@ class _ChannelsPageState extends State<ChannelsPage> {
   final ImagePicker _picker = ImagePicker();
   List<drive.File> folders = [];
   Map<String, String?> recentFiles = {};
+  Map<String, String?> recentFileTimes = {};
   Map<String, String?> profilePictures = {};
   File? selectedImageFile;
   bool _isLoading = true;
@@ -80,17 +80,36 @@ class _ChannelsPageState extends State<ChannelsPage> {
 
       // Get the most recent file and profile picture for each folder
       for (var folder in folders) {
-        var recentFile = await driveHelper!.getMostRecentFile(folder.id!);
-        recentFiles[folder.id!] = recentFile?.name;
+        var recentFileData = await driveHelper!.getMostRecentFile(folder.id!);
+        if (recentFileData != null) {
+          recentFiles[folder.id!] = recentFileData['name'];
+          recentFileTimes[folder.id!] = formatDateTime(recentFileData['time']!);
+        }
 
         var profilePictureUrl =
             await firebaseStorageHelper!.getImageUrl(folder.id!);
+
         profilePictures[folder.id!] = profilePictureUrl;
       }
 
       setState(() {});
     }
   }
+
+
+  String formatDateTime(String isoDateTime) {
+    final dateTime = DateTime.parse(isoDateTime);
+    final now = DateTime.now();
+
+    if (dateTime.year == now.year &&
+        dateTime.month == now.month &&
+        dateTime.day == now.day) {
+      return "${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}";
+    } else {
+      return "${dateTime.day.toString().padLeft(2, '0')}/${dateTime.month.toString().padLeft(2, '0')}/${dateTime.year.toString().substring(2)}";
+    }
+  }
+
 
   Future<void> _createFolderAndUploadImage(
       String folderName, File? imageFile) async {
@@ -199,9 +218,6 @@ class _ChannelsPageState extends State<ChannelsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Channels'),
-      ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
           : RefreshIndicator(
@@ -210,12 +226,28 @@ class _ChannelsPageState extends State<ChannelsPage> {
                 itemCount: folders.length,
                 itemBuilder: (context, index) {
                   final folder = folders[index];
+                  print(folder.id);
                   final recentFileName = recentFiles[folder.id] ?? 'No files';
+                  final recentFileTime = recentFileTimes[folder.id] ?? '';
                   final profilePictureUrl = profilePictures[folder.id];
 
                   return ListTile(
-                    title: Text(folder.name ?? 'Unnamed Folder'),
-                    subtitle: Text(recentFileName),
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            folder.name ?? 'Unnamed Folder',
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Text(
+                          recentFileTimes[folder.id!] ?? '',
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                    subtitle: Text(recentFiles[folder.id!] ?? 'No files'),
                     leading: profilePictureUrl != null
                         ? CachedNetworkImage(
                             imageUrl: profilePictureUrl,
@@ -240,9 +272,9 @@ class _ChannelsPageState extends State<ChannelsPage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) => ChannelPage(
-                              folderId: folder.id!,
-                              driveHelper: driveHelper,
-                          ), // Pass the folderId here
+                            folderId: folder.id!,
+                            driveHelper: driveHelper,
+                          ),
                         ),
                       );
                     },
@@ -251,10 +283,9 @@ class _ChannelsPageState extends State<ChannelsPage> {
               ),
             ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.green,
-        shape: const CircleBorder(),
+        backgroundColor: const Color.fromARGB(199, 98, 45, 134),
         onPressed: _openModal,
-        child: Icon(Icons.add),
+        child: Icon(Icons.add, color: Colors.white),
       ),
     );
   }

@@ -143,6 +143,15 @@ class DriveHelper {
     }
   }
 
+  Future<List<drive.File>> listSharedWithMeFolders() async {
+    final fileList = await driveApi.files.list(
+      q: "sharedWithMe and mimeType = 'application/vnd.google-apps.folder'",
+      spaces: 'drive',
+      $fields: 'files(id, name)',
+    );
+    return fileList.files ?? [];
+  }
+
 
   Future<List<drive.File>> listFilesC(String folderId) async {
     final fileList = await driveApi.files.list(
@@ -208,13 +217,22 @@ class DriveHelper {
     });
   }
 
-  Future<drive.File?> getMostRecentFile(String folderId) async {
+ Future<Map<String, String>?> getMostRecentFile(String folderId) async {
     final fileList = await driveApi.files.list(
-      q: "'$folderId' in parents and trashed = false",
-      orderBy: "createdTime desc",
+      q: "'$folderId' in parents and mimeType != 'application/vnd.google-apps.folder'",
+      orderBy: 'createdTime desc',
       pageSize: 1,
-      $fields: "files(id, name, createdTime, modifiedTime)",
+      $fields: 'files(id, name, createdTime)',
     );
-    return fileList.files?.first;
+
+    if (fileList.files?.isNotEmpty ?? false) {
+      final file = fileList.files!.first;
+      return {
+        'name': file.name ?? '',
+        'time': file.createdTime?.toIso8601String() ?? '',
+      };
+    }
+    return null;
   }
+
 }

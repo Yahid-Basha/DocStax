@@ -1,8 +1,9 @@
-import 'package:docstax/pages/account/auth_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/drive/v3.dart' as drive;
 import 'package:googleapis/drive/v2.dart' as drive_v2;
+import 'account/auth_helper.dart';
 import 'drive/drive_helper.dart';
 import './firebase/firebase_storage_helper.dart';
 import 'package:file_picker/file_picker.dart';
@@ -14,14 +15,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ChannelPage extends StatefulWidget {
   final String folderId;
   final DriveHelper? driveHelper;
-  const ChannelPage({required this.folderId,required this.driveHelper, Key? key}) : super(key: key);
+  const ChannelPage(
+      {required this.folderId, required this.driveHelper, Key? key})
+      : super(key: key);
 
   @override
   _ChannelPageState createState() => _ChannelPageState();
 }
 
 class _ChannelPageState extends State<ChannelPage> {
-  
   FirebaseStorageHelper? firebaseStorageHelper;
   List<drive.File> files = [];
   Map<String, bool> uploadingFiles = {};
@@ -30,7 +32,9 @@ class _ChannelPageState extends State<ChannelPage> {
   Map<String, String> localFilePaths = {};
   bool _isLoading = true;
   drive_v2.DriveApi? driveApiV2;
-
+  List<String> emailList = [];
+  String selectedAccessLevel = 'Reader';
+  String selectedLinkAccess = 'Restricted';
 
   @override
   void initState() {
@@ -39,6 +43,7 @@ class _ChannelPageState extends State<ChannelPage> {
     _loadDownloadedFiles(); // Load downloaded files on initialization
     _fetchFiles();
   }
+
   Future<void> _loadDownloadedFiles() async {
     final prefs = await SharedPreferences.getInstance();
     final keys = prefs.getKeys();
@@ -47,11 +52,12 @@ class _ChannelPageState extends State<ChannelPage> {
       localFilePaths = {for (var key in keys) key: prefs.getString(key)!};
     });
   }
+
   Future<void> _saveDownloadedFile(String fileId, String filePath) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(fileId, filePath);
   }
-  
+
   Future<void> _initializeHelpers() async {
     final googleUser = await GoogleSignIn(
       scopes: [
@@ -76,7 +82,8 @@ class _ChannelPageState extends State<ChannelPage> {
       _isLoading = true;
     });
     try {
-      final fetchedFiles = await widget.driveHelper?.listFiles(widget.folderId) ?? [];
+      final fetchedFiles =
+          await widget.driveHelper?.listFiles(widget.folderId) ?? [];
       setState(() {
         files = fetchedFiles;
       });
@@ -99,8 +106,8 @@ class _ChannelPageState extends State<ChannelPage> {
       });
 
       try {
-        await widget.driveHelper?.uploadFile(
-            widget.folderId, file.path, file.path.split('/').last);
+        await widget.driveHelper
+            ?.uploadFile(widget.folderId, file.path, file.path.split('/').last);
         _fetchFiles(); // Refresh the file list
       } catch (e) {
         print('Error uploading file: $e');
@@ -127,7 +134,6 @@ class _ChannelPageState extends State<ChannelPage> {
       });
       await _saveDownloadedFile(
           file.id!, savePath); // Save to persistent storage
-
     } catch (e) {
       print('Error downloading file: $e');
       setState(() {
@@ -136,8 +142,7 @@ class _ChannelPageState extends State<ChannelPage> {
     }
   }
 
-
-Future<void> _showDeleteModal(drive.File file) async {
+  Future<void> _showDeleteModal(drive.File file) async {
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -221,17 +226,220 @@ Future<void> _showDeleteModal(drive.File file) async {
     }
   }
 
-Widget _buildFileItem(drive.File file, String date) {
+  Future<void> _showShareModal(drive.File file) async {
+    TextEditingController emailController = TextEditingController();
+    String fileLink = ''; // Assuming you have a way to get the file link
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: MediaQuery.of(context).viewInsets,
+          child: Wrap(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Share "${file.name}"',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 16),
+                    TextField(
+                      controller: emailController,
+                      decoration: InputDecoration(
+                        labelText: 'Add people, groups, and calendar events',
+                      ),
+                      onSubmitted: (value) {
+                        if (value.isNotEmpty) {
+                          setState(() {
+                            emailList.add(value);
+                          });
+                          emailController.clear();
+                        }
+                      },
+                    ),
+                    Wrap(
+                      spacing: 6.0,
+                      runSpacing: 6.0,
+                      children: emailList
+                          .map((email) => Chip(
+                                label: Text(email),
+                                onDeleted: () {
+                                  setState(() {
+                                    emailList.remove(email);
+                                  });
+                                },
+                              ))
+                          .toList(),
+                    ),
+                    SizedBox(height: 16),
+                    DropdownButton<String>(
+                      value: selectedAccessLevel,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedAccessLevel = newValue!;
+                        });
+                      },
+                      items: <String>['Reader', 'Commenter', 'Editor']
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                    DropdownButton<String>(
+                      value: selectedLinkAccess,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedLinkAccess = newValue!;
+                        });
+                      },
+                      items: <String>['Restricted', 'Anyone with the link']
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                    SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextButton(
+                          onPressed: () async {
+                            await _updatePermissionsAndCopyLink(file);
+                          },
+                          child: Text('Copy link'),
+                        ),
+                        ElevatedButton(
+                          onPressed: () async {
+                            await _updatePermissions(file);
+                            Navigator.pop(context); // Close the modal
+                          },
+                          child: Text('Done'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _updatePermissionsAndCopyLink(drive.File file) async {
+    await _updatePermissions(file);
+
+    String fileLink = await _getFileLink(file.id!);
+    _copyToClipboard(fileLink);
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('Link copied to clipboard'),
+    ));
+  }
+
+  Future<void> _updatePermissions(drive.File file) async {
+    for (var email in emailList) {
+      await _addPermission(file, email, selectedAccessLevel.toLowerCase());
+    }
+
+    if (selectedLinkAccess == 'Anyone with the link') {
+      await _setAnyoneWithLinkPermission(file);
+    } else {
+      await _setRestrictedPermission(file);
+    }
+  }
+
+  Future<String> _getFileLink(String fileId) async {
+    try {
+      var file = await widget.driveHelper!.driveApi.files
+          .get(fileId, $fields: 'webViewLink');
+      return (file as drive.File).webViewLink ?? '';
+    } catch (e) {
+      print('Error getting file link: $e');
+      return '';
+    }
+  }
+
+  void _copyToClipboard(String text) {
+    Clipboard.setData(ClipboardData(text: text));
+  }
+
+  Future<void> _addPermission(
+      drive.File file, String email, String role) async {
+    var permission = drive.Permission()
+      ..type = 'user'
+      ..role = role
+      ..emailAddress = email;
+
+    try {
+      await widget.driveHelper!.driveApi.permissions
+          .create(permission, file.id!);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Permission added successfully'),
+      ));
+    } catch (e) {
+      print('Error adding permission: $e');
+    }
+  }
+
+  Future<void> _setAnyoneWithLinkPermission(drive.File file) async {
+    var permission = drive.Permission()
+      ..type = 'anyone'
+      ..role = 'reader';
+
+    try {
+      await widget.driveHelper!.driveApi.permissions
+          .create(permission, file.id!);
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Link access set to "Anyone with the link"'),
+      ));
+    } catch (e) {
+      print('Error setting link access: $e');
+    }
+  }
+
+  Future<void> _setRestrictedPermission(drive.File file) async {
+    try {
+      var permissions =
+          await widget.driveHelper!.driveApi.permissions.list(file.id!);
+      for (var permission in permissions.permissions!) {
+        if (permission.type == 'anyone') {
+          await widget.driveHelper!.driveApi.permissions
+              .delete(file.id!, permission.id!);
+        }
+      }
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Link access set to "Restricted"'),
+      ));
+    } catch (e) {
+      print('Error setting restricted access: $e');
+    }
+  }
+
+  Widget _buildFileItem(drive.File file, String date) {
     final isUploading = uploadingFiles[file.name] ?? false;
     final isDownloading = downloadingFiles[file.id!] ?? false;
     final isDownloaded = downloadedFiles[file.id!] ?? false;
     final localFilePath = localFilePaths[file.id!];
-
-    // Format the time to show only hours and minutes
-    final time =
-        file.createdTime?.toLocal().toIso8601String().substring(11, 16) ??
-            file.modifiedTime?.toLocal().toIso8601String().substring(11, 16) ??
-            'Unknown';
+    final now = DateTime.now();
+    final time = file.modifiedTime != null
+        ? (file.modifiedTime!.toLocal().day == now.day &&
+                file.modifiedTime!.toLocal().month == now.month &&
+                file.modifiedTime!.toLocal().year == now.year)
+            ? file.modifiedTime!.toLocal().toIso8601String().substring(11, 16)
+            : '${file.modifiedTime!.toLocal().day}/${file.modifiedTime!.toLocal().month}/${file.modifiedTime!.toLocal().year}'
+        : 'Unknown';
 
     return Stack(
       children: [
@@ -286,6 +494,10 @@ Widget _buildFileItem(drive.File file, String date) {
                           onPressed: () => _downloadFile(file),
                         ),
               IconButton(
+                icon: const Icon(Icons.share),
+                onPressed: () => _showShareModal(file),
+              ),
+              IconButton(
                 icon: const Icon(Icons.delete),
                 onPressed: () => _showDeleteModal(file),
               ),
@@ -296,7 +508,7 @@ Widget _buildFileItem(drive.File file, String date) {
     );
   }
 
-@override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -343,7 +555,7 @@ Widget _buildFileItem(drive.File file, String date) {
     );
   }
 
-Map<String, List<drive.File>> _groupFilesByDate() {
+  Map<String, List<drive.File>> _groupFilesByDate() {
     final Map<String, List<drive.File>> groupedFiles = {};
 
     for (var file in files) {
@@ -357,13 +569,6 @@ Map<String, List<drive.File>> _groupFilesByDate() {
       groupedFiles[date]!.add(file);
     }
 
-    // Reverse the order of each group
-    groupedFiles.forEach((key, value) {
-      groupedFiles[key] = value.reversed.toList();
-    });
-
     return groupedFiles;
   }
-
-
 }
