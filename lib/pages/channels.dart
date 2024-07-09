@@ -283,10 +283,13 @@ class _ChannelsPageState extends State<ChannelsPage> {
                           builder: (context) => ChannelPage(
                             folderId: folder.id!,
                             driveHelper: driveHelper,
+                            channelName: folder.name ??
+                                'Unnamed Folder', // Pass the channel name
                           ),
                         ),
                       );
                     },
+
                   );
                 },
               ),

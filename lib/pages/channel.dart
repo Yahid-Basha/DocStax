@@ -15,13 +15,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 class ChannelPage extends StatefulWidget {
   final String folderId;
   final DriveHelper? driveHelper;
-  const ChannelPage(
-      {required this.folderId, required this.driveHelper, Key? key})
-      : super(key: key);
+  final String channelName; // Add this line
+
+  const ChannelPage({
+    required this.folderId,
+    required this.driveHelper,
+    required this.channelName, // Add this line
+    Key? key,
+  }) : super(key: key);
 
   @override
   _ChannelPageState createState() => _ChannelPageState();
 }
+
 
 class _ChannelPageState extends State<ChannelPage> {
   FirebaseStorageHelper? firebaseStorageHelper;
@@ -426,20 +432,12 @@ class _ChannelPageState extends State<ChannelPage> {
       print('Error setting restricted access: $e');
     }
   }
-
-  Widget _buildFileItem(drive.File file, String date) {
+Widget _buildFileItem(drive.File file, String date) {
     final isUploading = uploadingFiles[file.name] ?? false;
     final isDownloading = downloadingFiles[file.id!] ?? false;
     final isDownloaded = downloadedFiles[file.id!] ?? false;
     final localFilePath = localFilePaths[file.id!];
-    final now = DateTime.now();
-    final time = file.modifiedTime != null
-        ? (file.modifiedTime!.toLocal().day == now.day &&
-                file.modifiedTime!.toLocal().month == now.month &&
-                file.modifiedTime!.toLocal().year == now.year)
-            ? file.modifiedTime!.toLocal().toIso8601String().substring(11, 16)
-            : '${file.modifiedTime!.toLocal().day}/${file.modifiedTime!.toLocal().month}/${file.modifiedTime!.toLocal().year}'
-        : 'Unknown';
+    final time = _getTimeString(file);
 
     return Stack(
       children: [
@@ -464,44 +462,45 @@ class _ChannelPageState extends State<ChannelPage> {
                       fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8.0),
-                Text(
-                  time,
-                  style: const TextStyle(fontSize: 14, color: Colors.grey),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      time,
+                      style: const TextStyle(fontSize: 14, color: Colors.grey),
+                    ),
+                    Row(
+                      children: [
+                        if (isUploading)
+                          const CircularProgressIndicator(strokeWidth: 1.0),
+                        if (!isUploading) ...[
+                          isDownloading
+                              ? CircularProgressIndicator(strokeWidth: 1.0)
+                              : isDownloaded
+                                  ? IconButton(
+                                      icon: const Icon(Icons.open_in_new),
+                                      onPressed: () =>
+                                          OpenFilex.open(localFilePath),
+                                    )
+                                  : IconButton(
+                                      icon: const Icon(Icons.download),
+                                      onPressed: () => _downloadFile(file),
+                                    ),
+                          IconButton(
+                            icon: const Icon(Icons.share),
+                            onPressed: () => _showShareModal(file),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete),
+                            onPressed: () => _showDeleteModal(file),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ],
                 ),
-                if (isUploading)
-                  const Align(
-                    alignment: Alignment.centerRight,
-                    child: CircularProgressIndicator(),
-                  ),
               ],
             ),
-          ),
-        ),
-        Positioned(
-          right: 0,
-          bottom: 0,
-          child: Row(
-            children: [
-              isDownloading
-                  ? CircularProgressIndicator()
-                  : isDownloaded
-                      ? IconButton(
-                          icon: const Icon(Icons.open_in_new),
-                          onPressed: () => OpenFilex.open(localFilePath),
-                        )
-                      : IconButton(
-                          icon: const Icon(Icons.download),
-                          onPressed: () => _downloadFile(file),
-                        ),
-              IconButton(
-                icon: const Icon(Icons.share),
-                onPressed: () => _showShareModal(file),
-              ),
-              IconButton(
-                icon: const Icon(Icons.delete),
-                onPressed: () => _showDeleteModal(file),
-              ),
-            ],
           ),
         ),
       ],
@@ -512,7 +511,7 @@ class _ChannelPageState extends State<ChannelPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Channel'),
+        title: Text(widget.channelName),
       ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())
@@ -554,6 +553,19 @@ class _ChannelPageState extends State<ChannelPage> {
       ),
     );
   }
+
+  String _getTimeString(drive.File file) {
+    final now = DateTime.now();
+    final createdTime = file.createdTime ?? DateTime.now();
+    if (createdTime.year == now.year &&
+        createdTime.month == now.month &&
+        createdTime.day == now.day) {
+      return '${createdTime.hour}:${createdTime.minute.toString().padLeft(2, '0')}';
+    } else {
+      return '${createdTime.day}/${createdTime.month}/${createdTime.year}';
+    }
+  }
+
 
   Map<String, List<drive.File>> _groupFilesByDate() {
     final Map<String, List<drive.File>> groupedFiles = {};

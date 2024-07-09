@@ -154,10 +154,13 @@ class _SharedWithMePageState extends State<SharedWithMePage> {
                           builder: (context) => ChannelPage(
                             folderId: folder.id!,
                             driveHelper: driveHelper,
+                            channelName: folder.name ??
+                                'Unnamed Folder', // Pass the channel name
                           ),
                         ),
                       );
                     },
+
                   );
 
                 },
