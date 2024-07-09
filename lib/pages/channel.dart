@@ -40,7 +40,7 @@ class _ChannelPageState extends State<ChannelPage> {
   drive_v2.DriveApi? driveApiV2;
   List<String> emailList = [];
   String selectedAccessLevel = 'Reader';
-  String selectedLinkAccess = 'Restricted Use';
+  String selectedLinkAccess = 'Restricted';
 
   @override
   void initState() {
@@ -295,21 +295,65 @@ Future<void> _showShareModal(drive.File file) async {
                                   ))
                               .toList(),
                         ),
-                        SizedBox(height: 16),
-                        Row(
+                        SizedBox(height: 20),
+                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Text('Permissions'),
+                            const Text('General Access', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),),
+                            Container(
+                              height: 35,
+
+                              padding: EdgeInsets.only(left: 10),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: Theme.of(context).primaryColor),
+                                borderRadius: BorderRadius.circular(40.0),
+                              ),
+                              child: DropdownButton<String>(
+                                value: selectedLinkAccess,
+                                underline: SizedBox(),
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    selectedLinkAccess = newValue!;
+                                  });
+                                },
+                                items: <String>[
+                                  'Restricted',
+                                  'Anyone with the link'
+                                ].map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Container(
+                                      child: Text(value,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.normal),
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 12),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Text('Permissions',
+                                style: TextStyle(
+                                    fontSize: 17, fontWeight: FontWeight.bold)),
                             Container(
                               padding: EdgeInsets.only(left:10),
-                              margin: EdgeInsets.only(bottom: 5),
+                              
                               height: 35,
                               decoration: BoxDecoration(
                               border: Border.all(
                                 color: Theme.of(context).primaryColor),
-                              borderRadius: BorderRadius.circular(8.0),
+                              borderRadius: BorderRadius.circular(40.0),
                               ),
                               child: DropdownButton<String>(
+                                underline: SizedBox(),
                               value: selectedAccessLevel,
                               onChanged: (String? newValue) {
                                 setState(() {
@@ -325,7 +369,7 @@ Future<void> _showShareModal(drive.File file) async {
                                 value: value,
                                 child: Container(
                                   // width: value.length * 8.0, // Adjust the width as needed
-                                  child: Text(value),
+                                  child: Text(value, style: TextStyle(fontWeight: FontWeight.normal),),
                                 ),
                                 );
                               }).toList(),
@@ -333,42 +377,8 @@ Future<void> _showShareModal(drive.File file) async {
                             ),
                           ],
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('General Access'),
-                            Container(
-                              height: 35,
-                              padding: EdgeInsets.only(left:10),
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Theme.of(context).primaryColor),
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                              child: DropdownButton<String>(
-                                value: selectedLinkAccess,
-                                onChanged: (String? newValue) {
-                                  setState(() {
-                                    selectedLinkAccess = newValue!;
-                                  });
-                                },
-                                items: <String>[
-                                  'Restricted',
-                                  'Anyone with the link'
-                                ].map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Container(
-                                      
-                                      width: value.length * 8.0, // Adjust the width as needed
-                                      child: Text(value),
-                                    ),
-                                  );
-                                }).toList(),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 16,),
+                       
+                        SizedBox(height: 9,),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
