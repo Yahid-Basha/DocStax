@@ -49,8 +49,8 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             icon: SvgPicture.asset('assets/icons/Search.svg',
-                width: 30,
-                height: 30,
+                width: 25,
+                height: 25,
                 color: Color.fromARGB(146, 78, 27,
                     112) // Change icon color to contrast with AppBar color
                 ),
@@ -60,11 +60,11 @@ class _HomePageState extends State<HomePage> {
             },
           ),
           IconButton(
-            icon: SvgPicture.asset(
-              'assets/icons/account.svg',
-              width: 30,
-              height: 30,
-              // Change icon color to contrast with AppBar color
+            icon: Icon(
+              Icons.refresh, // Built-in logout icon
+              size: 30, // Set the size of the icon
+              color: const Color.fromARGB(146, 78, 27,
+                  112), // Change icon color to contrast with AppBar color
             ),
             onPressed: () {
               Navigator.push(context,
@@ -72,11 +72,11 @@ class _HomePageState extends State<HomePage> {
             },
           ),
           IconButton(
-            icon: SvgPicture.asset(
-              'assets/icons/account.svg',
-              width: 20,
-              height: 20,
-              // Change icon color to contrast with AppBar color
+            icon: const Icon(
+              Icons.logout, // Built-in logout icon
+              size: 25, // Set the size of the icon
+              color: Color.fromARGB(146, 78, 27,
+                  112), // Change icon color to contrast with AppBar color
             ),
             onPressed: () {
               FirebaseAuth.instance.signOut();

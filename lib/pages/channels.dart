@@ -203,8 +203,17 @@ class _ChannelsPageState extends State<ChannelsPage> {
                           ));
                         }
                       },
+                      style: ElevatedButton.styleFrom(
+                        side: BorderSide(
+                            color: const Color.fromARGB(255, 131, 33, 243), width: 2), // Add border
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                              8.0), // Optional: Add rounded corners
+                        ),
+                      ),
                       child: Text('Create Channel'),
                     ),
+
                   ],
                 ),
               ),
