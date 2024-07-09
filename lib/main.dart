@@ -21,6 +21,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Docstax',
       theme: ThemeData(
+        primaryColor: const Color.fromARGB(199, 98, 45, 134),
       ),
       home:  AuthPage(),
     );
