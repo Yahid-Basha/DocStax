@@ -48,16 +48,19 @@ dependencies:
   firebase_auth: ^4.19.1
   cloud_firestore: ^4.17.0
   firebase_database: ^10.5.2
-
+  googleapis: ^13.2.0
+  googleapis_auth: ^1.6.0
   faker: ^2.1.0
-
-
+  cached_network_image: ^3.3.1
+  shared_preferences: ^2.2.3
   file_picker: ^8.0.3
   firebase_storage: ^11.7.5
   flutter_chat_types: ^3.6.2
   flutter_chat_ui: ^1.6.12
   flutter_firebase_chat_core: ^1.6.7
   open_filex: ^4.4.0
+  google_sign_in: ^6.2.1
+  share_plus: ^4.0.8
 
 dependency_overrides:
   http: ^1.0.0

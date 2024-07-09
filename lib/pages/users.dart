@@ -1,12 +1,10 @@
+import 'package:docstax/pages/downloads.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_firebase_chat_core/flutter_firebase_chat_core.dart';
-
-// import 'chat.dart';
-// import 'util.dart';
 import '../../pages/util.dart';
-import '../../pages/chatPage2.dart';
+
 
 class UsersPage extends StatelessWidget {
   const UsersPage({super.key});
@@ -38,9 +36,7 @@ class UsersPage extends StatelessWidget {
     navigator.pop();
     await navigator.push(
       MaterialPageRoute(
-        builder: (context) => ChatPage(
-          room: room,
-        ),
+        builder: (context) => DownloadsPage(),
       ),
     );
   }

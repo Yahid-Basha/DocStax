@@ -1,6 +1,6 @@
 import 'package:docstax/pages/account/login.dart';
 import 'package:docstax/pages/account/signup.dart';
-import 'package:docstax/pages/homePage.dart';
+import 'package:docstax/pages/home.dart';
 import 'package:docstax/pages/onboarding/onboardingpage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -15,11 +15,11 @@ class AuthPage extends StatelessWidget{
           builder: (context, snapshot) {
             // User is signed in
             if (snapshot.hasData) {
-              return SignupPage();
+              return HomePage();
             } 
             // User is not signed in
             else {
-              return HomePage();
+              return SignupPage();
             }
           },
         ),
