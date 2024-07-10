@@ -1,3 +1,4 @@
+import 'package:docstax/pages/util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -27,7 +28,6 @@ class ChannelPage extends StatefulWidget {
   @override
   _ChannelPageState createState() => _ChannelPageState();
 }
-
 
 class _ChannelPageState extends State<ChannelPage> {
   FirebaseStorageHelper? firebaseStorageHelper;
@@ -232,7 +232,7 @@ class _ChannelPageState extends State<ChannelPage> {
     }
   }
 
-  Future<void> _showShareModal(drive.File file) async {
+Future<void> _showShareModal(drive.File file) async {
     TextEditingController emailController = TextEditingController();
     String fileLink = ''; // Assuming you have a way to get the file link
 
@@ -240,104 +240,179 @@ class _ChannelPageState extends State<ChannelPage> {
       context: context,
       isScrollControlled: true,
       builder: (BuildContext context) {
-        return Padding(
-          padding: MediaQuery.of(context).viewInsets,
-          child: Wrap(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'Share "${file.name}"',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 16),
-                    TextField(
-                      controller: emailController,
-                      decoration: InputDecoration(
-                        labelText: 'Add people, groups, and calendar events',
-                      ),
-                      onSubmitted: (value) {
-                        if (value.isNotEmpty) {
-                          setState(() {
-                            emailList.add(value);
-                          });
-                          emailController.clear();
-                        }
-                      },
-                    ),
-                    Wrap(
-                      spacing: 6.0,
-                      runSpacing: 6.0,
-                      children: emailList
-                          .map((email) => Chip(
-                                label: Text(email),
-                                onDeleted: () {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return Padding(
+              padding: MediaQuery.of(context).viewInsets,
+              child: Wrap(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Share "${file.name}"',
+                          textAlign: TextAlign.justify,
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 16),
+                        TextField(
+                          controller: emailController,
+                          textAlign: TextAlign.center,
+                          decoration: const InputDecoration(
+                            labelText: 'Add people, groups, and calendar events',
+                            
+                            labelStyle: TextStyle(
+                              decoration: TextDecoration.none,
+                              fontSize: 16,
+
+                            ),
+                            
+                            ),
+
+                          onSubmitted: (value) {
+                            if (value.isNotEmpty) {
+                              setState(() {
+                                emailList.add(value);
+                              });
+                              emailController.clear();
+                            }
+                          },
+                        ),
+                        Wrap(
+                          spacing: 6.0,
+                          runSpacing: 6.0,
+                          children: emailList
+                              .map((email) => Chip(
+                                    label: Text(email),
+                                    onDeleted: () {
+                                      setState(() {
+                                        emailList.remove(email);
+                                      });
+                                    },
+                                  ))
+                              .toList(),
+                        ),
+                        SizedBox(height: 20),
+                         Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Text('General Access', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),),
+                            Container(
+                              height: 35,
+
+                              padding: EdgeInsets.only(left: 10),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                    color: Theme.of(context).primaryColor),
+                                borderRadius: BorderRadius.circular(40.0),
+                              ),
+                              child: DropdownButton<String>(
+                                value: selectedLinkAccess,
+                                underline: SizedBox(),
+                                onChanged: (String? newValue) {
                                   setState(() {
-                                    emailList.remove(email);
+                                    selectedLinkAccess = newValue!;
                                   });
                                 },
-                              ))
-                          .toList(),
-                    ),
-                    SizedBox(height: 16),
-                    DropdownButton<String>(
-                      value: selectedAccessLevel,
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          selectedAccessLevel = newValue!;
-                        });
-                      },
-                      items: <String>['Reader', 'Commenter', 'Editor']
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                    ),
-                    DropdownButton<String>(
-                      value: selectedLinkAccess,
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          selectedLinkAccess = newValue!;
-                        });
-                      },
-                      items: <String>['Restricted', 'Anyone with the link']
-                          .map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                    ),
-                    SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TextButton(
-                          onPressed: () async {
-                            await _updatePermissionsAndCopyLink(file);
-                          },
-                          child: Text('Copy link'),
+                                items: <String>[
+                                  'Restricted',
+                                  'Anyone with the link'
+                                ].map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Container(
+                                      child: Text(value,
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.normal),
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ],
                         ),
-                        ElevatedButton(
-                          onPressed: () async {
-                            await _updatePermissions(file);
-                            Navigator.pop(context); // Close the modal
-                          },
-                          child: Text('Done'),
+                        SizedBox(height: 12),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Text('Permissions',
+                                style: TextStyle(
+                                    fontSize: 17, fontWeight: FontWeight.bold)),
+                            Container(
+                              padding: EdgeInsets.only(left:10),
+                              
+                              height: 35,
+                              decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Theme.of(context).primaryColor),
+                              borderRadius: BorderRadius.circular(40.0),
+                              ),
+                              child: DropdownButton<String>(
+                                underline: SizedBox(),
+                              value: selectedAccessLevel,
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                selectedAccessLevel = newValue!;
+                                });
+                              },
+                              items: <String>[
+                                'Reader',
+                                'Commenter',
+                                'Editor'
+                              ].map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(
+                                value: value,
+                                child: Container(
+                                  // width: value.length * 8.0, // Adjust the width as needed
+                                  child: Text(value, style: TextStyle(fontWeight: FontWeight.normal),),
+                                ),
+                                );
+                              }).toList(),
+                              ),
+                            ),
+                          ],
+                        ),
+                       
+                        SizedBox(height: 9,),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            CircleAvatar(
+                              backgroundColor: Theme.of(context).primaryColor,
+                              child: IconButton(
+                              icon: Icon(Icons.link, color: Colors.white),
+                              onPressed: () async {
+                                await _updatePermissionsAndCopyLink(file);
+                              },
+                              ),
+                            ),
+                            ElevatedButton(
+                              onPressed: () async {
+                                await _updatePermissions(file);
+                                Navigator.pop(context); // Close the modal
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Theme.of(context).primaryColor,
+                              ),
+                              child: Text(
+                                'Done',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
     );
@@ -432,7 +507,8 @@ class _ChannelPageState extends State<ChannelPage> {
       print('Error setting restricted access: $e');
     }
   }
-Widget _buildFileItem(drive.File file, String date) {
+
+  Widget _buildFileItem(drive.File file, String date) {
     final isUploading = uploadingFiles[file.name] ?? false;
     final isDownloading = downloadingFiles[file.id!] ?? false;
     final isDownloaded = downloadedFiles[file.id!] ?? false;
@@ -565,7 +641,6 @@ Widget _buildFileItem(drive.File file, String date) {
       return '${createdTime.day}/${createdTime.month}/${createdTime.year}';
     }
   }
-
 
   Map<String, List<drive.File>> _groupFilesByDate() {
     final Map<String, List<drive.File>> groupedFiles = {};

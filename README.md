@@ -3,6 +3,13 @@
 ## Overview
 DocStax is a feature-rich mobile application designed for efficient document management and sharing. Built using Flutter and Dart, the app integrates seamlessly with Google Drive and Firebase to provide a robust backend and secure file storage.
 
+## UI
+
+![UI Images 1](https://github.com/Yahid-Basha/DocStax/assets/97111767/908e5f10-ff89-4382-b3e4-c2c89fb13eb8)
+
+![UI images 2](https://github.com/Yahid-Basha/DocStax/assets/97111767/11d96a76-040c-4c20-b000-259dc15ec23a)
+
+
 ## Features
 - **Channel Management:**
   - Structured document management with channels for organizing files.

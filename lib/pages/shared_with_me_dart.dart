@@ -166,13 +166,7 @@ class _SharedWithMePageState extends State<SharedWithMePage> {
                 },
               ),
             ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color.fromARGB(199, 98, 45, 134),
-        onPressed: () {
-          // Implement any required action for FloatingActionButton
-        },
-        child: Icon(Icons.add, color: Colors.white),
-      ),
+      
     );
   }
 }
