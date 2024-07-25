@@ -74,4 +74,4 @@ Contributions are welcome! Please create an issue or submit a pull request with 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Contact
-For any inquiries or feedback, please contact [yahidbasha@gmail.com](mailto:yahidbasha@gmail.com).
+For any inquiries or feedback, please contact [yahidbasha@gmail.com](mailto:yahidbasha@gmail.com) and [krishnaveni8v@gmail.com](mailto:krishnaveni8v@gmail.com).
